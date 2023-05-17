@@ -23,6 +23,7 @@ if 'train_data' not in st.session_state:
 # Calculate summary statistics
 @st.cache_data
 def summary_stats():
+    st.subheader('Summary Statistics', anchor=False)
     stats = st.session_state['train_data'].describe()
     st.write(stats)
 
@@ -80,17 +81,15 @@ def scatter_matrix_plot(columns, serial_no):
     sns.pairplot(subset_df)
     st.pyplot(plt)
 
-def app():
-    
+@st.cache_data
+def default_dataframes():
     st.title('''**Problem 4 - Housing Prices Analysis**''', anchor=False)
     
     st.subheader('Dataframe', anchor=False)
     st.dataframe(st.session_state['train_data'], use_container_width=True)
 
-    st.subheader('Summary Statistics', anchor=False)
-    summary_stats()
-
-    # heat map
+@st.cache_data
+def heatmap_wrapper():
     correlation_option_selected = st.radio(
         "Please select an option for correlations",
         ('All Correlations',
@@ -101,22 +100,29 @@ def app():
     elif correlation_option_selected == 'High Correlations':
         st.subheader('High Correlations', anchor=False)
         heatmap_high_correlations()
-        
-    # scatter plot
+
+@st.cache_data
+def scatter_plot():
     st.subheader('Scatter plot', anchor=False)
     selected_features = st.multiselect('Select features to plot against sale price', st.session_state['train_data'].columns)
     scatter_plot(selected_features)
 
+@st.cache_data
+def numeric_stats():
     st.subheader('summary numeric', anchor=False)
     numeric_cols = st.session_state['train_data'].select_dtypes(include=['int64', 'float64'])
     summary_stats2 = numeric_cols.describe()
     st.dataframe(summary_stats2)
 
+@st.cache_data
+def categorical_stats():
     st.subheader('summary categorical', anchor=False)
     categorical_cols = st.session_state['train_data'].select_dtypes(include=['int8'])
     summary_stats3 = categorical_cols.describe()
     st.dataframe(summary_stats3)
 
+@st.cache_data
+def scatter_matrix_plot():
     scatter_matrix_plot_option_1 = 'MSSubClass,MSZoning,LotFrontage,LotArea,Street,Alley,LotShape,LandContour,Utilities,LotConfig,LandSlope,Neighborhood'
     scatter_matrix_plot_option_2 = 'Condition1,Condition2,BldgType,HouseStyle,OverallQual,OverallCond,YearBuilt,YearRemodAdd'
     scatter_matrix_plot_option_3 = 'RoofStyle,RoofMatl,Exterior1st,Exterior2nd,MasVnrType,MasVnrArea,ExterQual,ExterCond'
@@ -153,6 +159,15 @@ def app():
             scatter_matrix_plot(scatter_matrix_plot_option_7.split(","), 7)
     elif scatter_matrix_plot_option_selected == scatter_matrix_plot_option_8:
             scatter_matrix_plot(scatter_matrix_plot_option_8.split(","), 8)
+
+def app():
+    default_dataframes()
+    summary_stats()
+    heatmap_wrapper()
+    scatter_plot()
+    numeric_stats()
+    categorical_stats()
+    scatter_matrix_plot()
 
 if __name__ == '__main__':
     app()
