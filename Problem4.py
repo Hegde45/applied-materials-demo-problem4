@@ -163,11 +163,17 @@ def scatter_matrix_plot_wrapper():
 
 def app():
     default_dataframes()
+    st.divider()
     summary_stats()
+    st.divider()
     heatmap_wrapper()
+    st.divider()
     scatter_plot_wrapper()
+    st.divider()
     numeric_stats()
+    st.divider()
     categorical_stats()
+    st.divider()
     scatter_matrix_plot_wrapper()
 
 if __name__ == '__main__':
